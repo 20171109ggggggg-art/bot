@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gate.io 交易機器人 v4.2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .version {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            margin-top: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .form-group input, .form-group select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-info {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        
+        .close-buttons {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .param-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .param-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .param-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .param-table input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .positions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .position-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        
+        .position-card.long {
+            border-left-color: #27ae60;
+        }
+        
+        .position-card.short {
+            border-left-color: #e74c3c;
+        }
+        
+        .position-card h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .layer-badge {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+        
+        .position-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .profit-positive {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .profit-negative {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 400px;
+            overflow-y: auto;
+            display: block;
+        }
+        
+        .records-table thead {
+            background: #667eea;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        .records-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        .records-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .records-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .symbol-selector-container {
+            margin-top: 15px;
+        }
+        
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .contracts-stats {
+            background: #e8f5e9;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: #2e7d32;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .symbol-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        
+        .symbol-chip {
+            padding: 8px 15px;
+            background: #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .symbol-chip.selected {
+            background: #667eea;
+            color: white;
+        }
+        
+        .symbol-chip:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .symbol-chip.delisting {
+            opacity: 0.6;
+        }
+        
+        .warning-icon {
+            color: #f39c12;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .info-box {
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+        }
+        
+        .selected-count {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 5px;
+            color: #1976d2;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .layer-column {
+            background: #e8f5e9;
+        }
+        
+        .symbol-config {
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: white;
+        }
+        
+        .symbol-config-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .symbol-config-header h3 {
+            color: #667eea;
+            margin: 0;
+        }
+        
+        .symbol-configs-container {
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .default-params-btn {
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .stopped-symbol-card {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            color: #c33;
+        }
+        
+        .error-message h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        .error-details {
+            font-family: monospace;
+            font-size: 12px;
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        
+        .auto-restart-control {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .auto-restart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .auto-restart-label {
+            font-weight: bold;
+            font-size: 14px;
+            color: #667eea;
+        }
+        
+        .auto-restart-status {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .toggle-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Gate.io 順勢交易機器人</h1>
+            <div class="version">v4.2 - 倉位塔片控制 + 持久化 + 倉位同步</div>
+            <div class="status" id="botStatus">狀態: 未啟動</div>
+        </div>
+        
+        <div class="content">
+            <!-- 帳戶總覽 -->
+            <div class="section">
+                <h2>帳戶總覽</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 14px; color: #666;">總交易次數</div>
+                        <div id="totalTrades" style="font-size: 24px; font-weight: bold; color: #27ae60;">0</div>
+                    </div>
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 14px; color: #666;">勝率</div>
+                        <div id="winRate" style="font-size: 24px; font-weight: bold; color: #2196f3;">0%</div>
+                    </div>
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 14px; color: #666;">累計淨盈虧</div>
+                        <div id="totalProfit" style="font-size: 24px; font-weight: bold;">0 USDT</div>
+                    </div>
+                    <div style="background: #f3e5f5; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 14px; color: #666;">今日淨盈虧</div>
+                        <div id="dailyProfit" style="font-size: 24px; font-weight: bold;">0 USDT</div>
+                    </div>
+                    <div style="background: #fce4ec; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 14px; color: #666;">活躍倉位</div>
+                        <div id="activePositions" style="font-size: 24px; font-weight: bold; color: #e91e63;">0</div>
+                    </div>
+                    <div style="background: #ffebee; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 14px; color: #666;">累計手續費</div>
+                        <div id="totalFees" style="font-size: 24px; font-weight: bold; color: #e74c3c;">0 USDT</div>
+                    </div>
+                    <div style="background: #fff3e0; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 14px; color: #666;">今日手續費</div>
+                        <div id="dailyFees" style="font-size: 24px; font-weight: bold; color: #f57c00;">0 USDT</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- API 設定 -->
+            <div class="section">
+                <h2>API 設定</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>API Key</label>
+                        <input type="text" id="apiKey" placeholder="輸入 Gate.io API Key" value="9f5f199300a42daf615dc5f16b1bba64">
+                    </div>
+                    <div class="form-group">
+                        <label>API Secret</label>
+                        <input type="password" id="apiSecret" placeholder="輸入 API Secret" value="8296c44034b58c073cbd1e8fa7a0b5997339fbe34857db76e62d5e0a894b94d9">
+                    </div>
+                    <div class="form-group">
+                        <label>環境</label>
+                        <select id="environment">
+                            <option value="true" selected>測試網</option>
+                            <option value="false">正式網</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">Telegram 通知 (選填)</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Bot Token</label>
+                        <input type="text" id="telegramToken" placeholder="選填" value="8202595321:AAFpL48nXoDEHzKjA6tSgbpvgyCIkOQ-iLE">
+                    </div>
+                    <div class="form-group">
+                        <label>Chat ID</label>
+                        <input type="text" id="telegramChatId" placeholder="選填" value="467274732">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 交易對選擇 -->
+            <div class="section">
+                <h2>選擇交易對</h2>
+                <div style="margin-bottom: 15px;">
+                    <button class="btn btn-secondary" onclick="loadContracts()">載入永續合約</button>
+                    <span style="margin-left: 10px; color: #666;" id="loadStatus">點擊載入合約列表</span>
+                </div>
+                
+                <div class="symbol-selector-container">
+                    <div class="search-bar">
+                        <input type="text" 
+                               id="contractSearch" 
+                               class="search-input"
+                               placeholder="搜尋合約... (例如: BTC, ETH, GALA)"
+                               oninput="filterContracts(this.value)">
+                        <button class="btn btn-secondary" onclick="clearSelection()">清除選擇</button>
+                    </div>
+                    
+                    <div id="contractsStats" class="contracts-stats" style="display: none;"></div>
+                    <div id="selectedCount" class="selected-count"></div>
+                    
+                    <div class="symbol-selector" id="symbolSelector">
+                        <div class="loading">點擊「載入永續合約」開始</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 參數設定 - 使用分頁 -->
+            <div class="section">
+                <h2>參數設定</h2>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('global')">全域參數(套用所有幣)</button>
+                    <button class="tab" onclick="switchTab('individual')">個別幣種參數</button>
+                </div>
+                
+                <!-- 全域參數頁面 -->
+                <div id="globalTab" class="tab-content active">
+                    <div style="margin-bottom: 15px;">
+                        <button class="btn btn-secondary" onclick="addGlobalRow()">增加層數</button>
+                        <button class="btn btn-secondary" onclick="removeGlobalRow()">減少層數</button>
+                        <button class="btn btn-secondary" onclick="resetGlobalTable()">重置為預設</button>
+                        <button class="btn btn-success" onclick="applyGlobalToAll()">套用全域參數到所有已選幣種</button>
+                        <span style="margin-left: 20px; color: #666;">提示:可從 Excel 複製資料,選中表格後按 Ctrl+V 貼上</span>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="param-table" id="globalParamTable">
+                            <thead>
+                                <tr>
+                                    <th class="layer-column">層數</th>
+                                    <th>多倉(張)</th>
+                                    <th>空倉(張)</th>
+                                    <th>加倉閾值(%)</th>
+                                    <th>獲利目標(%)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="globalParamTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- 個別參數頁面 -->
+                <div id="individualTab" class="tab-content">
+                    <div class="info-box" style="margin-bottom: 15px;">
+                        請先在上方選擇交易對,然後在此為每個幣種設定專屬參數。未設定的幣種將使用全域參數。
+                    </div>
+                    <div class="symbol-configs-container" id="symbolConfigsContainer">
+                        <p style="text-align: center; color: #999;">請先選擇交易對</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="startBot()">啟動機器人</button>
+                    <button class="btn btn-danger" onclick="stopBot()">停止機器人</button>
+                </div>
+            </div>
+            
+            <!-- 當前倉位 -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>當前倉位</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-info" onclick="syncPositions()">從交易所同步倉位</button>
+                        <button class="btn btn-danger" onclick="closeAllPositions('force')">直接平倉所有</button>
+                    </div>
+                </div>
+                <div class="info-box" style="margin-bottom: 15px; background: #fff3cd; border-left-color: #ffc107;">
+                    <strong>重要提示:</strong><br>
+                    <div style="margin-top: 8px;">
+                        如果刷新頁面後倉位消失但交易所仍有倉位,請點擊「從交易所同步倉位」恢復追蹤<br>
+                        同步功能會將交易所的實際倉位恢復到本地追蹤系統<br>
+                        每個倉位都可獨立設置達標平倉後的行為,設置會即時保存並在重啟後保留
+                    </div>
+                </div>
+                <div class="positions-grid" id="positionsGrid">
+                    <p>尚無倉位</p>
+                </div>
+            </div>
+            
+            <!-- 已停止的交易對 -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>已停止的交易對</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-success" onclick="restartAllStoppedSymbols()">重啟全部</button>
+                    </div>
+                </div>
+                <div id="stoppedSymbolsContainer">
+                    <p style="text-align: center; color: #999;">暫無已停止的交易對</p>
+                </div>
+            </div>
+            
+            <!-- 交易記錄 -->
+            <div class="section">
+                <h2>交易記錄</h2>
+                <div style="overflow-x: auto;">
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>時間</th>
+                                <th>交易對</th>
+                                <th>類型</th>
+                                <th>方向</th>
+                                <th>價格</th>
+                                <th>張數</th>
+                                <th>動作</th>
+                                <th class="layer-column">層級</th>
+                                <th>獲利%</th>
+                                <th>備註</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordsTable">
+                            <tr><td colspan="10" style="text-align: center;">暫無記錄</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let selectedSymbols = [];
+        let updateInterval = null;
+        let allContracts = [];
+        let symbolParams = {};
+        let stoppedSymbols = [];
+        
+        const defaultParams = [
+            { long: 20, short: 10, threshold: 0.5, profit: 0.5 },
+            { long: 40, short: 20, threshold: 0.5, profit: 0.45 },
+            { long: 80, short: 40, threshold: 0.5, profit: 0.4 },
+            { long: 160, short: 80, threshold: 0.5, profit: 0.35 },
+            { long: 320, short: 160, threshold: 0.5, profit: 0.3 },
+            { long: 640, short: 320, threshold: 0.5, profit: 0.25 },
+            { long: 1280, short: 640, threshold: 0.5, profit: 0.2 },
+            { long: 2560, short: 1280, threshold: 0.5, profit: 0.15 },
+            { long: 5120, short: 2560, threshold: 0.5, profit: 0.1 },
+            { long: 10240, short: 5120, threshold: 0.5, profit: 0.1 }
+        ];
+        
+        function formatPrice(price) {
+            if (price >= 1000) {
+                return price.toFixed(2);
+            } else if (price >= 1) {
+                return price.toFixed(5);
+            } else if (price >= 0.01) {
+                return price.toFixed(6);
+            } else {
+                return price.toFixed(8);
+            }
+        }
+        
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            if (tabName === 'global') {
+                document.querySelector('.tab:nth-child(1)').classList.add('active');
+                document.getElementById('globalTab').classList.add('active');
+            } else {
+                document.querySelector('.tab:nth-child(2)').classList.add('active');
+                document.getElementById('individualTab').classList.add('active');
+            }
+        }
+        
+        function initGlobalTable() {
+            const tbody = document.getElementById('globalParamTableBody');
+            tbody.innerHTML = '';
+            
+            defaultParams.forEach((param, index) => {
+                addGlobalRowWithData(index + 1, param.long, param.short, param.threshold, param.profit);
+            });
+            
+            enablePasteSupport('globalParamTable');
+        }
+        
+        function addGlobalRowWithData(rowNum, long, short, threshold, profit) {
+            const tbody = document.getElementById('globalParamTableBody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="layer-column" style="font-weight: bold; background: #e8f5e9;">Layer ${rowNum}</td>
+                <td><input type="number" value="${long}" class="long-amount" step="any"></td>
+                <td><input type="number" value="${short}" class="short-amount" step="any"></td>
+                <td><input type="number" value="${threshold}" class="add-threshold" step="0.01"></td>
+                <td><input type="number" value="${profit}" class="take-profit" step="0.01"></td>
+            `;
+            tbody.appendChild(row);
+        }
+        
+        function addGlobalRow() {
+            const tbody = document.getElementById('globalParamTableBody');
+            const rowCount = tbody.rows.length;
+            const lastRow = tbody.rows[rowCount - 1];
+            
+            let lastLong = parseFloat(lastRow.querySelector('.long-amount').value) || 0;
+            let lastShort = parseFloat(lastRow.querySelector('.short-amount').value) || 0;
+            let lastThreshold = parseFloat(lastRow.querySelector('.add-threshold').value) || 0.5;
+            let lastProfit = parseFloat(lastRow.querySelector('.take-profit').value) || 0.1;
+            
+            const newLong = lastLong * 2;
+            const newShort = lastShort * 2;
+            const newProfit = Math.max(0.05, lastProfit - 0.05);
+            
+            addGlobalRowWithData(rowCount + 1, newLong, newShort, lastThreshold, newProfit);
+            enablePasteSupport('globalParamTable');
+        }
+        
+        function removeGlobalRow() {
+            const tbody = document.getElementById('globalParamTableBody');
+            if (tbody.rows.length > 1) {
+                tbody.deleteRow(tbody.rows.length - 1);
+            } else {
+                alert('至少要保留一層!');
+            }
+        }
+        
+        function resetGlobalTable() {
+            if (confirm('確定要重置為預設 10 層參數嗎?')) {
+                initGlobalTable();
+            }
+        }
+        
+        function getGlobalParams() {
+            const tbody = document.getElementById('globalParamTableBody');
+            const rows = tbody.getElementsByTagName('tr');
+            const params = [];
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                params.push({
+                    layer: i + 1,
+                    long: parseInt(row.querySelector('.long-amount').value) || 0,
+                    short: parseInt(row.querySelector('.short-amount').value) || 0,
+                    threshold: parseFloat(row.querySelector('.add-threshold').value) || 0,
+                    profit: parseFloat(row.querySelector('.take-profit').value) || 0
+                });
+            }
+            
+            return params;
+        }
+        
+        function applyGlobalToAll() {
+            if (selectedSymbols.length === 0) {
+                alert('請先選擇交易對');
+                return;
+            }
+            
+            const globalParams = getGlobalParams();
+            
+            selectedSymbols.forEach(symbol => {
+                symbolParams[symbol] = JSON.parse(JSON.stringify(globalParams));
+            });
+            
+            updateSymbolConfigsDisplay();
+            alert(`已套用全域參數到 ${selectedSymbols.length} 個幣種`);
+        }
+        
+        function updateSymbolConfigsDisplay() {
+            const container = document.getElementById('symbolConfigsContainer');
+            
+            if (selectedSymbols.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999;">請先選擇交易對</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            selectedSymbols.forEach(symbol => {
+                const config = document.createElement('div');
+                config.className = 'symbol-config';
+                config.id = `config-${symbol}`;
+                
+                if (!symbolParams[symbol]) {
+                    symbolParams[symbol] = JSON.parse(JSON.stringify(getGlobalParams()));
+                }
+                
+                const params = symbolParams[symbol];
+                
+                let tableRows = '';
+                params.forEach((param, index) => {
+                    tableRows += `
+                        <tr>
+                            <td class="layer-column" style="font-weight: bold; background: #e8f5e9;">Layer ${index + 1}</td>
+                            <td><input type="number" value="${param.long}" class="long-amount" step="any" data-symbol="${symbol}" data-layer="${index}"></td>
+                            <td><input type="number" value="${param.short}" class="short-amount" step="any" data-symbol="${symbol}" data-layer="${index}"></td>
+                            <td><input type="number" value="${param.threshold}" class="add-threshold" step="0.01" data-symbol="${symbol}" data-layer="${index}"></td>
+                            <td><input type="number" value="${param.profit}" class="take-profit" step="0.01" data-symbol="${symbol}" data-layer="${index}"></td>
+                        </tr>
+                    `;
+                });
+                
+                config.innerHTML = `
+                    <div class="symbol-config-header">
+                        <h3>${symbol}</h3>
+                        <div>
+                            <button class="btn btn-secondary" onclick="addSymbolRow('${symbol}')">增加層數</button>
+                            <button class="btn btn-secondary" onclick="removeSymbolRow('${symbol}')">減少層數</button>
+                            <button class="default-params-btn" onclick="resetSymbolParams('${symbol}')">重置為全域參數</button>
+                        </div>
+                    </div>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="param-table" id="table-${symbol}">
+                            <thead>
+                                <tr>
+                                    <th class="layer-column">層數</th>
+                                    <th>多倉(張)</th>
+                                    <th>空倉(張)</th>
+                                    <th>加倉閾值(%)</th>
+                                    <th>獲利目標(%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>${tableRows}</tbody>
+                        </table>
+                    </div>
+                `;
+                
+                container.appendChild(config);
+                
+                enablePasteSupport(`table-${symbol}`);
+                
+                config.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('change', () => updateSymbolParamsFromInput(symbol));
+                });
+            });
+        }
+        
+        function updateSymbolParamsFromInput(symbol) {
+            const table = document.getElementById(`table-${symbol}`);
+            const rows = table.querySelector('tbody').getElementsByTagName('tr');
+            
+            symbolParams[symbol] = [];
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                symbolParams[symbol].push({
+                    layer: i + 1,
+                    long: parseInt(row.querySelector('.long-amount').value) || 0,
+                    short: parseInt(row.querySelector('.short-amount').value) || 0,
+                    threshold: parseFloat(row.querySelector('.add-threshold').value) || 0,
+                    profit: parseFloat(row.querySelector('.take-profit').value) || 0
+                });
+            }
+        }
+        
+        function addSymbolRow(symbol) {
+            if (!symbolParams[symbol] || symbolParams[symbol].length === 0) {
+                symbolParams[symbol] = JSON.parse(JSON.stringify(getGlobalParams()));
+            }
+            
+            const lastParam = symbolParams[symbol][symbolParams[symbol].length - 1];
+            symbolParams[symbol].push({
+                layer: symbolParams[symbol].length + 1,
+                long: (lastParam.long || 0) * 2,
+                short: (lastParam.short || 0) * 2,
+                threshold: lastParam.threshold || 0.5,
+                profit: Math.max(0.05, (lastParam.profit || 0.1) - 0.05)
+            });
+            
+            updateSymbolConfigsDisplay();
+        }
+        
+        function removeSymbolRow(symbol) {
+            if (!symbolParams[symbol] || symbolParams[symbol].length <= 1) {
+                alert('至少要保留一層!');
+                return;
+            }
+            
+            symbolParams[symbol].pop();
+            updateSymbolConfigsDisplay();
+        }
+        
+        function resetSymbolParams(symbol) {
+            if (confirm(`確定要將 ${symbol} 重置為全域參數嗎?`)) {
+                symbolParams[symbol] = JSON.parse(JSON.stringify(getGlobalParams()));
+                updateSymbolConfigsDisplay();
+            }
+        }
+        
+        function enablePasteSupport(tableId) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            
+            table.removeEventListener('paste', handlePaste);
+            table.addEventListener('paste', handlePaste);
+            const tbody = table.querySelector('tbody');
+            if (tbody) {
+                tbody.setAttribute('tabindex', '0');
+            }
+        }
+        
+        function handlePaste(e) {
+            e.preventDefault();
+            
+            const clipboardData = e.clipboardData || window.clipboardData;
+            const pastedData = clipboardData.getData('Text');
+            
+            if (!pastedData) {
+                alert('剪貼簿無資料');
+                return;
+            }
+            
+            const rows = pastedData.trim().split('\n');
+            const tableId = e.currentTarget.id;
+            const tbody = document.querySelector(`#${tableId} tbody`);
+            
+            if (!confirm(`即將貼上 ${rows.length} 行資料,是否繼續?`)) {
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            
+            rows.forEach((rowData, index) => {
+                const cells = rowData.split('\t');
+                
+                let long, short, threshold, profit;
+                
+                if (cells.length >= 5) {
+                    long = cells[1].trim() === '' ? 0 : parseInt(cells[1]) || 0;
+                    short = cells[2].trim() === '' ? 0 : parseInt(cells[2]) || 0;
+                    threshold = cells[3].trim() === '' ? 0 : parseFloat(cells[3]) || 0;
+                    profit = cells[4].trim() === '' ? 0 : parseFloat(cells[4]) || 0;
+                } else if (cells.length >= 4) {
+                    long = cells[0].trim() === '' ? 0 : parseInt(cells[0]) || 0;
+                    short = cells[1].trim() === '' ? 0 : parseInt(cells[1]) || 0;
+                    threshold = cells[2].trim() === '' ? 0 : parseFloat(cells[2]) || 0;
+                    profit = cells[3].trim() === '' ? 0 : parseFloat(cells[3]) || 0;
+                } else {
+                    return;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="layer-column" style="font-weight: bold; background: #e8f5e9;">Layer ${index + 1}</td>
+                    <td><input type="number" value="${long}" class="long-amount" step="any"></td>
+                    <td><input type="number" value="${short}" class="short-amount" step="any"></td>
+                    <td><input type="number" value="${threshold}" class="add-threshold" step="0.01"></td>
+                    <td><input type="number" value="${profit}" class="take-profit" step="0.01"></td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            enablePasteSupport(tableId);
+            alert(`成功貼上 ${tbody.rows.length} 層參數!`);
+            
+            if (tableId.startsWith('table-')) {
+                const symbol = tableId.replace('table-', '');
+                updateSymbolParamsFromInput(symbol);
+            }
+        }
+        
+        async function loadContracts() {
+            const selector = document.getElementById('symbolSelector');
+            const statusEl = document.getElementById('loadStatus');
+            const statsDiv = document.getElementById('contractsStats');
+            
+            selector.innerHTML = '<div class="loading active">載入中...</div>';
+            statusEl.textContent = '正在取得合約列表...';
+            statsDiv.style.display = 'none';
+            
+            try {
+                const testnet = document.getElementById('environment').value;
+                const response = await fetch(`/api/contracts?testnet=${testnet}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('API 返回非 JSON 格式');
+                }
+                
+                const contracts = await response.json();
+                allContracts = contracts;
+                selector.innerHTML = '';
+                
+                if (!contracts || contracts.length === 0) {
+                    statsDiv.style.display = 'block';
+                    statsDiv.innerHTML = 'API 無法取得合約,使用預設列表';
+                    statusEl.textContent = '使用預設列表';
+                    renderContracts(getClientDefaultContracts());
+                    return;
+                }
+                
+                statsDiv.style.display = 'block';
+                statsDiv.innerHTML = `成功載入 <strong>${contracts.length}</strong> 個永續合約`;
+                statusEl.textContent = `已載入 ${contracts.length} 個合約`;
+                renderContracts(contracts);
+                
+            } catch (error) {
+                console.error('載入合約錯誤:', error);
+                statsDiv.style.display = 'block';
+                statsDiv.style.background = '#ffe6e6';
+                statsDiv.style.color = '#c0392b';
+                statsDiv.innerHTML = `載入失敗: ${error.message}<br>已自動切換到預設合約列表`;
+                selector.innerHTML = '';
+                statusEl.textContent = '載入失敗,使用預設列表';
+                
+                const defaultContracts = getClientDefaultContracts();
+                allContracts = defaultContracts;
+                renderContracts(defaultContracts);
+            }
+        }
+        
+        function getClientDefaultContracts() {
+            return [
+                {name: 'BTC_USDT', underlying: 'BTC', type: 'perpetual', in_delisting: false},
+                {name: 'ETH_USDT', underlying: 'ETH', type: 'perpetual', in_delisting: false},
+                {name: 'BNB_USDT', underlying: 'BNB', type: 'perpetual', in_delisting: false},
+                {name: 'SOL_USDT', underlying: 'SOL', type: 'perpetual', in_delisting: false},
+                {name: 'XRP_USDT', underlying: 'XRP', type: 'perpetual', in_delisting: false},
+            ];
+        }
+        
+        function renderContracts(contracts) {
+            const selector = document.getElementById('symbolSelector');
+            selector.innerHTML = '';
+            
+            contracts.forEach(contract => {
+                const chip = document.createElement('div');
+                chip.className = 'symbol-chip';
+                chip.dataset.contractName = contract.name;
+                
+                let displayText = contract.name;
+                if (contract.in_delisting) {
+                    chip.classList.add('delisting');
+                    displayText = `${contract.name}`;
+                    chip.title = '此合約即將下市';
+                }
+                
+                if (selectedSymbols.includes(contract.name)) {
+                    chip.classList.add('selected');
+                }
+                
+                chip.innerHTML = displayText;
+                chip.onclick = () => toggleSymbol(contract.name, chip);
+                selector.appendChild(chip);
+            });
+        }
+        
+        function toggleSymbol(symbol, element) {
+            if (selectedSymbols.includes(symbol)) {
+                selectedSymbols = selectedSymbols.filter(s => s !== symbol);
+                element.classList.remove('selected');
+                delete symbolParams[symbol];
+            } else {
+                selectedSymbols.push(symbol);
+                element.classList.add('selected');
+                symbolParams[symbol] = JSON.parse(JSON.stringify(getGlobalParams()));
+            }
+            
+            updateSelectedCount();
+            updateSymbolConfigsDisplay();
+        }
+        
+        function updateSelectedCount() {
+            const countDisplay = document.getElementById('selectedCount');
+            if (selectedSymbols.length > 0) {
+                countDisplay.textContent = `已選擇 ${selectedSymbols.length} 個交易對: ${selectedSymbols.join(', ')}`;
+                countDisplay.style.display = 'block';
+            } else {
+                countDisplay.style.display = 'none';
+            }
+        }
+        
+        function filterContracts(searchText) {
+            const chips = document.querySelectorAll('.symbol-chip');
+            const searchUpper = searchText.toUpperCase();
+            
+            let visibleCount = 0;
+            chips.forEach(chip => {
+                const contractName = chip.dataset.contractName || chip.textContent;
+                if (contractName.includes(searchUpper) || searchText === '') {
+                    chip.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    chip.style.display = 'none';
+                }
+            });
+        }
+        
+        function clearSelection() {
+            selectedSymbols = [];
+            symbolParams = {};
+            document.querySelectorAll('.symbol-chip').forEach(chip => {
+                chip.classList.remove('selected');
+            });
+            updateSelectedCount();
+            updateSymbolConfigsDisplay();
+        }
+        
+        async function startBot() {
+            if (selectedSymbols.length === 0) {
+                alert('請選擇至少一個交易對');
+                return;
+            }
+            
+            const apiKey = document.getElementById('apiKey').value;
+            const apiSecret = document.getElementById('apiSecret').value;
+            
+            if (!apiKey || !apiSecret) {
+                alert('請填寫 API Key 和 Secret');
+                return;
+            }
+            
+            selectedSymbols.forEach(symbol => {
+                if (!symbolParams[symbol]) {
+                    symbolParams[symbol] = JSON.parse(JSON.stringify(getGlobalParams()));
+                }
+            });
+            
+            const config = {
+                api_key: apiKey,
+                api_secret: apiSecret,
+                testnet: document.getElementById('environment').value === 'true',
+                telegram_token: document.getElementById('telegramToken').value,
+                telegram_chat_id: document.getElementById('telegramChatId').value,
+                symbols: selectedSymbols,
+                symbol_params: symbolParams
+            };
+            
+            console.log('發送配置:', config);
+            
+            if (!confirm(`確定要啟動機器人嗎?\n\n交易對: ${selectedSymbols.length} 個\n\n所有交易對預設為「達標後繼續交易」\n可在運行中於「當前倉位」區域調整`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/start', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(config)
+                });
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const textResponse = await response.text();
+                    console.error('非 JSON 回應:', textResponse.substring(0, 500));
+                    throw new Error('伺服器返回非 JSON 格式');
+                }
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    document.getElementById('botStatus').textContent = '狀態: 運行中';
+                    document.getElementById('botStatus').style.background = 'rgba(39, 174, 96, 0.3)';
+                    startUpdates();
+                    alert(`機器人啟動成功!\n${result.message}\n\n提示:\n1. 在「當前倉位」區域可調整達標後行為\n2. 設置會即時保存,重啟後保留`);
+                } else {
+                    alert('啟動失敗: ' + (result.message || '未知錯誤'));
+                }
+            } catch (error) {
+                console.error('啟動錯誤:', error);
+                alert('啟動失敗: ' + error.message);
+            }
+        }
+        
+        async function stopBot() {
+            try {
+                await fetch('/api/stop', {method: 'POST'});
+                document.getElementById('botStatus').textContent = '狀態: 已停止';
+                document.getElementById('botStatus').style.background = 'rgba(231, 76, 60, 0.3)';
+                
+                if (updateInterval) {
+                    clearInterval(updateInterval);
+                    updateInterval = null;
+                }
+                
+                alert('機器人已停止');
+            } catch (error) {
+                alert('停止失敗: ' + error.message);
+            }
+        }
+        
+        function startUpdates() {
+            updatePositions();
+            updateRecords();
+            updateStoppedSymbols();
+            updateStats();
+            
+            updateInterval = setInterval(() => {
+                updatePositions();
+                updateRecords();
+                updateStoppedSymbols();
+                updateStats();
+            }, 5000);
+        }
+        
+        async function updateStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const stats = await response.json();
+                
+                document.getElementById('totalTrades').textContent = stats.total_trades;
+                document.getElementById('winRate').textContent = stats.win_rate + '%';
+                
+                const totalProfitEl = document.getElementById('totalProfit');
+                totalProfitEl.textContent = stats.total_profit.toFixed(2) + ' USDT';
+                totalProfitEl.style.color = stats.total_profit >= 0 ? '#27ae60' : '#e74c3c';
+                
+                const dailyProfitEl = document.getElementById('dailyProfit');
+                dailyProfitEl.textContent = stats.daily_profit.toFixed(2) + ' USDT';
+                dailyProfitEl.style.color = stats.daily_profit >= 0 ? '#27ae60' : '#e74c3c';
+                
+                document.getElementById('activePositions').textContent = stats.active_positions;
+                
+                document.getElementById('totalFees').textContent = stats.total_fees.toFixed(2) + ' USDT';
+                document.getElementById('dailyFees').textContent = stats.daily_fees.toFixed(2) + ' USDT';
+                
+            } catch (error) {
+                console.error('更新統計失敗:', error);
+            }
+        }
+        
+        function addToggleSwitchStyles() {
+            if (document.getElementById('toggle-switch-styles')) {
+                return;
+            }
+            
+            const style = document.createElement('style');
+            style.id = 'toggle-switch-styles';
+            style.textContent = `
+                input[id^="auto-restart-"]:checked {
+                    background: #27ae60 !important;
+                }
+                input[id^="auto-restart-"]::before {
+                    content: '';
+                    position: absolute;
+                    width: 22px;
+                    height: 22px;
+                    border-radius: 50%;
+                    background: white;
+                    top: 2px;
+                    left: 2px;
+                    transition: 0.3s;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                }
+                input[id^="auto-restart-"]:checked::before {
+                    left: 26px;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        async function loadAutoRestartStatus(symbol) {
+            try {
+                const response = await fetch(`/api/get_auto_restart/${symbol}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const checkbox = document.getElementById(`auto-restart-${symbol}`);
+                    const statusText = document.getElementById(`mode-status-${symbol}`);
+                    
+                    if (checkbox && statusText) {
+                        checkbox.checked = result.auto_restart;
+                        
+                        if (result.auto_restart) {
+                            statusText.textContent = '循環交易模式';
+                            statusText.style.color = '#27ae60';
+                        } else {
+                            statusText.textContent = '一次性獲利模式';
+                            statusText.style.color = '#e74c3c';
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error(`載入 ${symbol} 達標後行為失敗:`, error);
+            }
+        }
+        
+        const toggleDebounce = {};
+
+        async function toggleAutoRestartForSymbol(symbol, autoRestart) {
+            if (toggleDebounce[symbol]) {
+                clearTimeout(toggleDebounce[symbol]);
+            }
+
+            toggleDebounce[symbol] = setTimeout(async () => {
+                try {
+                    const checkbox = document.getElementById(`auto-restart-${symbol}`);
+                    const statusSpan = document.getElementById(`mode-status-${symbol}`);
+
+                    if (checkbox) {
+                        checkbox.disabled = true;
+                    }
+
+                    const response = await fetch('/api/update_auto_restart', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ symbol: symbol, auto_restart: autoRestart })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        if (checkbox) {
+                            checkbox.style.background = autoRestart ? '#4CAF50' : '#ccc';
+                        }
+
+                        if (statusSpan) {
+                            statusSpan.textContent = autoRestart ? '循環交易模式' : '達標後停止';
+                            statusSpan.style.color = autoRestart ? '#4CAF50' : '#ff6b6b';
+                        }
+
+                        console.log(`${symbol}: ${autoRestart ? '達標後繼續' : '達標後停止'}`);
+                    } else {
+                        console.error('更新失敗:', data.message);
+                        if (checkbox) {
+                            checkbox.checked = !autoRestart;
+                        }
+                    }
+                } catch (error) {
+                    console.error('更新達標後行為失敗:', error);
+                    const checkbox = document.getElementById(`auto-restart-${symbol}`);
+                    if (checkbox) {
+                        checkbox.checked = !autoRestart;
+                    }
+                } finally {
+                    const checkbox = document.getElementById(`auto-restart-${symbol}`);
+                    if (checkbox) {
+                        checkbox.disabled = false;
+                    }
+                }
+            }, 300);
+        }
+        
+        async function updatePositions() {
+            try {
+                const response = await fetch('/api/positions');
+                const positions = await response.json();
+                const grid = document.getElementById('positionsGrid');
+
+                if (positions.length === 0) {
+                    grid.innerHTML = '<p>尚無倉位</p>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+
+                const symbolGroups = {};
+                positions.forEach(pos => {
+                    if (!symbolGroups[pos.symbol]) {
+                        symbolGroups[pos.symbol] = { long: null, short: null };
+                    }
+                    if (pos.type === '多倉') {
+                        symbolGroups[pos.symbol].long = pos;
+                    } else {
+                        symbolGroups[pos.symbol].short = pos;
+                    }
+                });
+
+                for (const [symbol, data] of Object.entries(symbolGroups)) {
+                    const container = document.createElement('div');
+                    container.style.cssText = 'grid-column: 1 / -1; margin-bottom: 20px;';
+
+                    const controlHtml = `
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong style="font-size: 18px; color: #667eea;">${symbol}</strong>
+                                    <span id="mode-status-${symbol}" style="margin-left: 15px; font-size: 14px; color: #999;"></span>
+                                </div>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="checkbox"
+                                           id="auto-restart-${symbol}"
+                                           onchange="toggleAutoRestartForSymbol('${symbol}', this.checked)"
+                                           style="width: 50px; height: 26px; appearance: none; background: #ccc; border-radius: 13px; outline: none; cursor: pointer; transition: 0.3s; position: relative;">
+                                    <span style="font-size: 14px; font-weight: 500;">達標後繼續交易</span>
+                                </label>
+                            </div>
+                        </div>
+                    `;
+
+                    container.innerHTML = controlHtml;
+
+                    const cardsContainer = document.createElement('div');
+                    cardsContainer.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;';
+
+                    if (data.long) {
+                        const pos = data.long;
+                        const profitClass = pos.profit >= 0 ? 'profit-positive' : 'profit-negative';
+
+                        const longCard = document.createElement('div');
+                        longCard.className = 'position-card long';
+                        longCard.innerHTML = `
+                            <h3>${pos.symbol} - ${pos.type}<span class="layer-badge">Layer ${pos.layer}</span></h3>
+                            <div class="position-info"><span>進場價格:</span><span>${formatPrice(pos.entry_price)}</span></div>
+                            <div class="position-info"><span>當前價格:</span><span>${formatPrice(pos.current_price)}</span></div>
+                            <div class="position-info"><span>合約張數:</span><span>${pos.size} 張</span></div>
+                            <div class="position-info"><span>當前層級:</span><span>Layer ${pos.layer} (加倉 ${pos.add_count} 次)</span></div>
+                            <div class="position-info"><span>未實現盈虧:</span><span class="${profitClass}">${pos.unrealised_pnl ? pos.unrealised_pnl.toFixed(2) : '0.00'} USDT</span></div>
+                            <div class="position-info"><span>盈虧百分比:</span><span class="${profitClass}">${pos.profit.toFixed(2)}%</span></div>
+                            <div class="close-buttons">
+                                <button class="btn btn-danger btn-small" onclick="closePosition('${pos.symbol}', 'force')">直接平倉</button>
+                            </div>
+                        `;
+                        cardsContainer.appendChild(longCard);
+                    }
+
+                    if (data.short) {
+                        const pos = data.short;
+                        const profitClass = pos.profit >= 0 ? 'profit-positive' : 'profit-negative';
+
+                        const shortCard = document.createElement('div');
+                        shortCard.className = 'position-card short';
+                        shortCard.innerHTML = `
+                            <h3>${pos.symbol} - ${pos.type}<span class="layer-badge">Layer ${pos.layer}</span></h3>
+                            <div class="position-info"><span>進場價格:</span><span>${formatPrice(pos.entry_price)}</span></div>
+                            <div class="position-info"><span>當前價格:</span><span>${formatPrice(pos.current_price)}</span></div>
+                            <div class="position-info"><span>合約張數:</span><span>${pos.size} 張</span></div>
+                            <div class="position-info"><span>當前層級:</span><span>Layer ${pos.layer} (加倉 ${pos.add_count} 次)</span></div>
+                            <div class="position-info"><span>未實現盈虧:</span><span class="${profitClass}">${pos.unrealised_pnl ? pos.unrealised_pnl.toFixed(2) : '0.00'} USDT</span></div>
+                            <div class="position-info"><span>盈虧百分比:</span><span class="${profitClass}">${pos.profit.toFixed(2)}%</span></div>
+                            <div class="close-buttons">
+                                <button class="btn btn-danger btn-small" onclick="closePosition('${pos.symbol}', 'force')">直接平倉</button>
+                            </div>
+                        `;
+                        cardsContainer.appendChild(shortCard);
+                    }
+
+                    container.appendChild(cardsContainer);
+                    grid.appendChild(container);
+
+                    loadAutoRestartStatus(symbol);
+                }
+
+                addToggleSwitchStyles();
+
+            } catch (error) {
+                console.error('更新倉位失敗:', error);
+            }
+        }
+        
+        async function syncPositions() {
+            if (!confirm('確定要從交易所同步倉位嗎?\n\n這會將交易所的實際倉位恢復到本地追蹤系統。\n\n適用場景:\n刷新頁面後倉位消失\n重啟後端服務後倉位丟失\n本地追蹤與交易所不一致')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/sync_positions', {
+                    method: 'POST'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    let message = `${result.message}`;
+                    
+                    if (result.synced_symbols && result.synced_symbols.length > 0) {
+                        message += `\n\n已恢復追蹤:\n${result.synced_symbols.join('\n')}`;
+                        message += `\n\n注意: 由於無法確定具體層數,已同步的倉位層級將設為 Layer 1`;
+                    }
+                    
+                    alert(message);
+                    updatePositions();
+                    updateRecords();
+                    updateStats();
+                } else {
+                    alert(`同步失敗: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('同步倉位錯誤:', error);
+                alert(`同步失敗: ${error.message}\n\n請確認:\n1. 後端服務正在運行\n2. API 配置正確\n3. 網路連線正常`);
+            }
+        }
+        
+        async function updateStoppedSymbols() {
+            try {
+                const response = await fetch('/api/get_stopped_symbols');
+                stoppedSymbols = await response.json();
+                const container = document.getElementById('stoppedSymbolsContainer');
+                
+                if (!stoppedSymbols || stoppedSymbols.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #999;">暫無已停止的交易對</p>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                
+                const grid = document.createElement('div');
+                grid.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;';
+                
+                stoppedSymbols.forEach(symbol => {
+                    const card = document.createElement('div');
+                    card.style.cssText = 'background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 8px;';
+                    
+                    card.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h3 style="margin: 0; color: #856404;">${symbol}</h3>
+                            <span style="background: #ffc107; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">已停止</span>
+                        </div>
+                        <div style="margin-bottom: 10px; font-size: 14px; color: #856404;">
+                            <div>狀態: 手動平倉後停止</div>
+                            <div>需手動重啟才能繼續交易</div>
+                        </div>
+                        <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                            <button class="btn btn-info btn-small" onclick="showUpdateParamsModal('${symbol}')" style="flex: 1;">
+                                更新參數
+                            </button>
+                            <button class="btn btn-success btn-small" onclick="restartSymbol('${symbol}')" style="flex: 1;">
+                                直接重啟
+                            </button>
+                        </div>
+                    `;
+                    
+                    grid.appendChild(card);
+                });
+                
+                container.appendChild(grid);
+                
+            } catch (error) {
+                console.error('更新已停止交易對失敗:', error);
+            }
+        }
+        
+        async function showUpdateParamsModal(symbol) {
+            try {
+                console.log('正在載入參數:', symbol);
+                
+                const response = await fetch(`/api/get_symbol_params?symbol=${encodeURIComponent(symbol)}`);
+                
+                console.log('HTTP 狀態:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API 錯誤回應:', errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const textResponse = await response.text();
+                    console.error('非 JSON 回應:', textResponse.substring(0, 500));
+                    throw new Error('伺服器返回非 JSON 格式');
+                }
+                
+                const result = await response.json();
+                
+                console.log('API 回應:', result);
+                
+                if (!result.success) {
+                    throw new Error(result.message || '未知錯誤');
+                }
+                
+                const currentParams = result.params;
+                
+                if (!currentParams || currentParams.length === 0) {
+                    throw new Error(`${symbol} 沒有參數配置`);
+                }
+                
+                console.log('載入參數成功:', currentParams.length, '層');
+                
+                const modal = document.createElement('div');
+                modal.id = 'updateParamsModal';
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999;
+                `;
+                
+                let tableRows = '';
+                currentParams.forEach((param, index) => {
+                    tableRows += `
+                        <tr>
+                            <td class="layer-column" style="font-weight: bold; background: #e8f5e9;">Layer ${index + 1}</td>
+                            <td><input type="number" value="${param.long}" class="long-amount-modal" step="any" data-layer="${index}"></td>
+                            <td><input type="number" value="${param.short}" class="short-amount-modal" step="any" data-layer="${index}"></td>
+                            <td><input type="number" value="${param.threshold}" class="add-threshold-modal" step="0.01" data-layer="${index}"></td>
+                            <td><input type="number" value="${param.profit}" class="take-profit-modal" step="0.01" data-layer="${index}"></td>
+                        </tr>
+                    `;
+                });
+                
+                modal.innerHTML = `
+                    <div style="background: white; border-radius: 15px; padding: 30px; max-width: 900px; max-height: 80vh; overflow-y: auto; width: 90%;">
+                        <h2 style="color: #667eea; margin-bottom: 20px;">更新 ${symbol} 參數</h2>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <button class="btn btn-secondary" onclick="addModalRow()">增加層數</button>
+                            <button class="btn btn-secondary" onclick="removeModalRow()">減少層數</button>
+                            <span style="margin-left: 10px; color: #666;">提示:可從 Excel 複製資料,按 Ctrl+V 貼上</span>
+                        </div>
+                        
+                        <div style="overflow-x: auto;">
+                            <table class="param-table" id="modalParamTable">
+                                <thead>
+                                    <tr>
+                                        <th class="layer-column">層數</th>
+                                        <th>多倉(張)</th>
+                                        <th>空倉(張)</th>
+                                        <th>加倉閾值(%)</th>
+                                        <th>獲利目標(%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="modalParamTableBody">
+                                    ${tableRows}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                            <button class="btn btn-secondary" onclick="closeUpdateParamsModal()">取消</button>
+                            <button class="btn btn-primary" onclick="saveAndRestartSymbol('${symbol}')">保存參數並重啟</button>
+                            <button class="btn btn-success" onclick="saveSymbolParams('${symbol}')">僅保存參數</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                enablePasteSupport('modalParamTable');
+                
+            } catch (error) {
+                console.error('顯示更新參數框錯誤:', error);
+                
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.innerHTML = `
+                    <h4>載入參數失敗</h4>
+                    <p><strong>交易對:</strong> ${symbol}</p>
+                    <p><strong>錯誤:</strong> ${error.message}</p>
+                    <div class="error-details">
+                        <strong>可能原因:</strong><br>
+                        1. 後端服務未運行<br>
+                        2. ${symbol} 不存在於 bot_state.json<br>
+                        3. 網路連線問題<br>
+                        <br>
+                        <strong>解決方法:</strong><br>
+                        1. 確認後端終端機顯示 "Running on http://0.0.0.0:5000"<br>
+                        2. 檢查 bot_state.json 中是否有 "${symbol}" 的配置<br>
+                        3. 按 F12 打開開發者工具查看 Console 和 Network 標籤
+                    </div>
+                    <button class="btn btn-secondary" onclick="this.parentElement.remove()" style="margin-top: 15px;">關閉</button>
+                `;
+                
+                document.body.appendChild(errorDiv);
+                
+                setTimeout(() => {
+                    if (errorDiv.parentElement) {
+                        errorDiv.style.transition = 'opacity 0.5s';
+                        errorDiv.style.opacity = '0';
+                        setTimeout(() => errorDiv.remove(), 500);
+                    }
+                }, 10000);
+            }
+        }
+        
+        function closeUpdateParamsModal() {
+            const modal = document.getElementById('updateParamsModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        function addModalRow() {
+            const tbody = document.getElementById('modalParamTableBody');
+            const rowCount = tbody.rows.length;
+            const lastRow = tbody.rows[rowCount - 1];
+            
+            let lastLong = parseFloat(lastRow.querySelector('.long-amount-modal').value) || 0;
+            let lastShort = parseFloat(lastRow.querySelector('.short-amount-modal').value) || 0;
+            let lastThreshold = parseFloat(lastRow.querySelector('.add-threshold-modal').value) || 0.5;
+            let lastProfit = parseFloat(lastRow.querySelector('.take-profit-modal').value) || 0.1;
+            
+            const newLong = lastLong * 2;
+            const newShort = lastShort * 2;
+            const newProfit = Math.max(0.05, lastProfit - 0.05);
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="layer-column" style="font-weight: bold; background: #e8f5e9;">Layer ${rowCount + 1}</td>
+                <td><input type="number" value="${newLong}" class="long-amount-modal" step="any" data-layer="${rowCount}"></td>
+                <td><input type="number" value="${newShort}" class="short-amount-modal" step="any" data-layer="${rowCount}"></td>
+                <td><input type="number" value="${lastThreshold}" class="add-threshold-modal" step="0.01" data-layer="${rowCount}"></td>
+                <td><input type="number" value="${newProfit}" class="take-profit-modal" step="0.01" data-layer="${rowCount}"></td>
+            `;
+            tbody.appendChild(row);
+            enablePasteSupport('modalParamTable');
+        }
+        
+        function removeModalRow() {
+            const tbody = document.getElementById('modalParamTableBody');
+            if (tbody.rows.length > 1) {
+                tbody.deleteRow(tbody.rows.length - 1);
+            } else {
+                alert('至少要保留一層!');
+            }
+        }
+        
+        function getModalParams() {
+            const tbody = document.getElementById('modalParamTableBody');
+            const rows = tbody.getElementsByTagName('tr');
+            const params = [];
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                params.push({
+                    layer: i + 1,
+                    long: parseInt(row.querySelector('.long-amount-modal').value) || 0,
+                    short: parseInt(row.querySelector('.short-amount-modal').value) || 0,
+                    threshold: parseFloat(row.querySelector('.add-threshold-modal').value) || 0,
+                    profit: parseFloat(row.querySelector('.take-profit-modal').value) || 0
+                });
+            }
+            
+            return params;
+        }
+        
+        async function saveSymbolParams(symbol) {
+            const params = getModalParams();
+            
+            if (params.length === 0) {
+                alert('參數不能為空');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/update_symbol_params', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        symbol: symbol,
+                        params: params
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`${symbol} 參數已更新\n共 ${params.length} 層\n\n下次重啟時將使用新參數`);
+                    closeUpdateParamsModal();
+                } else {
+                    alert(`更新失敗: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('保存參數錯誤:', error);
+                alert('保存參數失敗: ' + error.message);
+            }
+        }
+        
+        async function saveAndRestartSymbol(symbol) {
+            const params = getModalParams();
+            
+            if (params.length === 0) {
+                alert('參數不能為空');
+                return;
+            }
+            
+            if (!confirm(`確定要更新 ${symbol} 的參數並立即重啟嗎?\n\n將使用新的 ${params.length} 層參數重新建倉`)) {
+                return;
+            }
+            
+            try {
+                const updateResponse = await fetch('/api/update_symbol_params', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        symbol: symbol,
+                        params: params
+                    })
+                });
+                
+                const updateResult = await updateResponse.json();
+                
+                if (!updateResult.success) {
+                    alert(`更新參數失敗: ${updateResult.message}`);
+                    return;
+                }
+                
+                const restartResponse = await fetch('/api/restart_symbol', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({symbol})
+                });
+                
+                const restartResult = await restartResponse.json();
+                
+                if (restartResult.success) {
+                    alert(`${symbol} 參數已更新並重啟成功!\n${restartResult.message}`);
+                    closeUpdateParamsModal();
+                    updateStoppedSymbols();
+                    updatePositions();
+                    updateRecords();
+                } else {
+                    alert(`重啟失敗: ${restartResult.message}\n\n參數已保存,請稍後手動重啟`);
+                }
+                
+            } catch (error) {
+                console.error('保存並重啟錯誤:', error);
+                alert('操作失敗: ' + error.message);
+            }
+        }
+        
+        async function restartSymbol(symbol) {
+            if (!confirm(`確定要重新啟動 ${symbol} 嗎?\n\n將重新建立初始倉位並開始自動交易。`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/restart_symbol', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({symbol})
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`${symbol} 重新啟動成功!\n${result.message}`);
+                    updateStoppedSymbols();
+                    updatePositions();
+                    updateRecords();
+                } else {
+                    alert(`${symbol} 重新啟動失敗\n${result.message}`);
+                }
+            } catch (error) {
+                console.error('重啟交易對錯誤:', error);
+                alert(`重啟失敗: ${error.message}`);
+            }
+        }
+        
+        async function restartAllStoppedSymbols() {
+            if (stoppedSymbols.length === 0) {
+                alert('沒有需要重啟的交易對');
+                return;
+            }
+            
+            if (!confirm(`確定要重啟全部 ${stoppedSymbols.length} 個已停止的交易對嗎?\n\n${stoppedSymbols.join(', ')}\n\n所有交易對將重新建立初始倉位並開始自動交易。`)) {
+                return;
+            }
+            
+            let successCount = 0;
+            let failCount = 0;
+            const results = [];
+            
+            for (const symbol of stoppedSymbols) {
+                try {
+                    const response = await fetch('/api/restart_symbol', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({symbol})
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        successCount++;
+                        results.push(`${symbol}: 成功`);
+                    } else {
+                        failCount++;
+                        results.push(`${symbol}: ${result.message}`);
+                    }
+                    
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                } catch (error) {
+                    failCount++;
+                    results.push(`${symbol}: ${error.message}`);
+                }
+            }
+            
+            const message = `批量重啟完成!\n\n成功: ${successCount} 個\n失敗: ${failCount} 個\n\n詳細結果:\n${results.join('\n')}`;
+            alert(message);
+            
+            updateStoppedSymbols();
+            updatePositions();
+            updateRecords();
+        }
+        
+        async function updateRecords() {
+            try {
+                const response = await fetch('/api/records');
+                const records = await response.json();
+                const tbody = document.getElementById('recordsTable');
+                
+                if (records.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align: center;">暫無記錄</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = '';
+                
+                records.forEach(record => {
+                    const row = document.createElement('tr');
+                    const profitClass = record.profit >= 0 ? 'profit-positive' : 'profit-negative';
+                    
+                    row.innerHTML = `
+                        <td>${new Date(record.timestamp).toLocaleString('zh-TW')}</td>
+                        <td>${record.symbol}</td>
+                        <td>${record.position_type}</td>
+                        <td>${record.side === 'buy' ? '買入' : '賣出'}</td>
+                        <td>${formatPrice(record.price)}</td>
+                        <td>${record.size} 張</td>
+                        <td>${record.action}</td>
+                        <td class="layer-column" style="font-weight: bold; background: #e8f5e9;">Layer ${record.layer}</td>
+                        <td class="${profitClass}">${record.profit.toFixed(2)}%</td>
+                        <td style="font-size: 12px; color: #666;">${record.notes || ''}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('更新記錄失敗:', error);
+            }
+        }
+        
+        async function closePosition(symbol, mode) {
+            const confirmText = `確定要強制平倉 ${symbol} 嗎?\n(無論盈虧都會平倉)\n\n平倉後該交易對將停止,需手動重啟`;
+            
+            if (!confirm(confirmText)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/close_position', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({symbol, mode})
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`${symbol} 平倉成功!\n${result.message}\n\n該交易對已停止,如需繼續交易請在"已停止的交易對"區域重新啟動。`);
+                    updatePositions();
+                    updateRecords();
+                    updateStoppedSymbols();
+                    updateStats();
+                } else {
+                    alert(`${symbol} 平倉失敗:\n${result.message}`);
+                }
+            } catch (error) {
+                console.error('平倉錯誤:', error);
+                alert(`平倉失敗: ${error.message}`);
+            }
+        }
+        
+        async function closeAllPositions(mode) {
+            const confirmText = '確定要強制平倉所有交易對嗎?\n(無論盈虧都會平倉,請謹慎操作!)\n\n平倉後所有交易對將停止,需手動重啟';
+            
+            if (!confirm(confirmText)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/close_all_positions', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({mode})
+                });
+                
+                const result = await response.json();
+                
+                let message = `批量平倉完成!\n成功: ${result.success} 個\n失敗: ${result.failed} 個\n總盈虧: ${result.total_profit.toFixed(2)} USDT`;
+                
+                if (result.details && result.details.length > 0) {
+                    message += '\n\n詳細結果:\n';
+                    result.details.forEach(detail => {
+                        message += `${detail.symbol}: ${detail.status === 'success' ? '成功' : '失敗'} - ${detail.message}\n`;
+                    });
+                }
+                
+                message += '\n\n所有平倉的交易對已停止,如需繼續交易請在"已停止的交易對"區域重新啟動。';
+                
+                alert(message);
+                updatePositions();
+                updateRecords();
+                updateStoppedSymbols();
+                updateStats();
+            } catch (error) {
+                console.error('批量平倉錯誤:', error);
+                alert(`批量平倉失敗: ${error.message}`);
+            }
+        }
+        
+        window.onload = function() {
+            initGlobalTable();
+            setTimeout(() => {
+                loadContracts();
+            }, 500);
+        };
+    </script>
+</body>
+</html>

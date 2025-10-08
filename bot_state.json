@@ -1,0 +1,586 @@
+{
+  "positions": {
+    "JELLYJELLY_USDT": {
+      "long": {
+        "active": true,
+        "avg_price": 0.07870025,
+        "size": 8,
+        "current_layer": 2,
+        "add_count": 1,
+        "last_add_price": 0.078832,
+        "total_fees": 0.0004723425
+      },
+      "short": {
+        "active": true,
+        "avg_price": 0.07647453125,
+        "size": 64,
+        "current_layer": 4,
+        "add_count": 3,
+        "last_add_price": 0.076286,
+        "total_fees": 0.0036715410000000004
+      },
+      "all_params": [
+        {
+          "layer": 1,
+          "long": 2,
+          "short": 1,
+          "threshold": 0.5,
+          "profit": 100
+        },
+        {
+          "layer": 2,
+          "long": 6,
+          "short": 3,
+          "threshold": 0.5,
+          "profit": 70
+        },
+        {
+          "layer": 3,
+          "long": 24,
+          "short": 12,
+          "threshold": 0.5,
+          "profit": 50
+        },
+        {
+          "layer": 4,
+          "long": 96,
+          "short": 48,
+          "threshold": 0.5,
+          "profit": 45
+        },
+        {
+          "layer": 5,
+          "long": 384,
+          "short": 192,
+          "threshold": 0.5,
+          "profit": 35
+        },
+        {
+          "layer": 6,
+          "long": 512,
+          "short": 256,
+          "threshold": 0.5,
+          "profit": 30
+        },
+        {
+          "layer": 7,
+          "long": 1024,
+          "short": 512,
+          "threshold": 0.5,
+          "profit": 25
+        },
+        {
+          "layer": 8,
+          "long": 2048,
+          "short": 1024,
+          "threshold": 0.5,
+          "profit": 25
+        },
+        {
+          "layer": 9,
+          "long": 4096,
+          "short": 2048,
+          "threshold": 0.5,
+          "profit": 20
+        },
+        {
+          "layer": 10,
+          "long": 8192,
+          "short": 4096,
+          "threshold": 0.5,
+          "profit": 20
+        },
+        {
+          "layer": 11,
+          "long": 16384,
+          "short": 8192,
+          "threshold": 0.5,
+          "profit": 20
+        },
+        {
+          "layer": 12,
+          "long": 32768,
+          "short": 16384,
+          "threshold": 0.5,
+          "profit": 20
+        },
+        {
+          "layer": 13,
+          "long": 65536,
+          "short": 32768,
+          "threshold": 0.5,
+          "profit": 20
+        },
+        {
+          "layer": 14,
+          "long": 131072,
+          "short": 65536,
+          "threshold": 0.5,
+          "profit": 20
+        },
+        {
+          "layer": 15,
+          "long": 262144,
+          "short": 131072,
+          "threshold": 0.5,
+          "profit": 20
+        }
+      ]
+    }
+  },
+  "symbol_params": {
+    "FARTCOIN_USDT": [
+      {
+        "layer": 1,
+        "long": 2,
+        "short": 1,
+        "threshold": 0.5,
+        "profit": 100
+      },
+      {
+        "layer": 2,
+        "long": 6,
+        "short": 3,
+        "threshold": 0.5,
+        "profit": 70
+      },
+      {
+        "layer": 3,
+        "long": 24,
+        "short": 12,
+        "threshold": 0.5,
+        "profit": 50
+      },
+      {
+        "layer": 4,
+        "long": 96,
+        "short": 48,
+        "threshold": 0.5,
+        "profit": 45
+      },
+      {
+        "layer": 5,
+        "long": 384,
+        "short": 192,
+        "threshold": 0.5,
+        "profit": 35
+      },
+      {
+        "layer": 6,
+        "long": 512,
+        "short": 256,
+        "threshold": 0.5,
+        "profit": 30
+      },
+      {
+        "layer": 7,
+        "long": 1024,
+        "short": 512,
+        "threshold": 0.5,
+        "profit": 25
+      },
+      {
+        "layer": 8,
+        "long": 2048,
+        "short": 1024,
+        "threshold": 0.5,
+        "profit": 25
+      },
+      {
+        "layer": 9,
+        "long": 4096,
+        "short": 2048,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 10,
+        "long": 8192,
+        "short": 4096,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 11,
+        "long": 16384,
+        "short": 8192,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 12,
+        "long": 32768,
+        "short": 16384,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 13,
+        "long": 65536,
+        "short": 32768,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 14,
+        "long": 131072,
+        "short": 65536,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 15,
+        "long": 262144,
+        "short": 131072,
+        "threshold": 0.5,
+        "profit": 20
+      }
+    ],
+    "JELLYJELLY_USDT": [
+      {
+        "layer": 1,
+        "long": 2,
+        "short": 1,
+        "threshold": 0.5,
+        "profit": 100
+      },
+      {
+        "layer": 2,
+        "long": 6,
+        "short": 3,
+        "threshold": 0.5,
+        "profit": 70
+      },
+      {
+        "layer": 3,
+        "long": 24,
+        "short": 12,
+        "threshold": 0.5,
+        "profit": 50
+      },
+      {
+        "layer": 4,
+        "long": 96,
+        "short": 48,
+        "threshold": 0.5,
+        "profit": 45
+      },
+      {
+        "layer": 5,
+        "long": 384,
+        "short": 192,
+        "threshold": 0.5,
+        "profit": 35
+      },
+      {
+        "layer": 6,
+        "long": 512,
+        "short": 256,
+        "threshold": 0.5,
+        "profit": 30
+      },
+      {
+        "layer": 7,
+        "long": 1024,
+        "short": 512,
+        "threshold": 0.5,
+        "profit": 25
+      },
+      {
+        "layer": 8,
+        "long": 2048,
+        "short": 1024,
+        "threshold": 0.5,
+        "profit": 25
+      },
+      {
+        "layer": 9,
+        "long": 4096,
+        "short": 2048,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 10,
+        "long": 8192,
+        "short": 4096,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 11,
+        "long": 16384,
+        "short": 8192,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 12,
+        "long": 32768,
+        "short": 16384,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 13,
+        "long": 65536,
+        "short": 32768,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 14,
+        "long": 131072,
+        "short": 65536,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 15,
+        "long": 262144,
+        "short": 131072,
+        "threshold": 0.5,
+        "profit": 20
+      }
+    ],
+    "ARC_USDT": [
+      {
+        "layer": 1,
+        "long": 2,
+        "short": 1,
+        "threshold": 0.5,
+        "profit": 100
+      },
+      {
+        "layer": 2,
+        "long": 6,
+        "short": 3,
+        "threshold": 0.5,
+        "profit": 70
+      },
+      {
+        "layer": 3,
+        "long": 24,
+        "short": 12,
+        "threshold": 0.5,
+        "profit": 50
+      },
+      {
+        "layer": 4,
+        "long": 96,
+        "short": 48,
+        "threshold": 0.5,
+        "profit": 45
+      },
+      {
+        "layer": 5,
+        "long": 384,
+        "short": 192,
+        "threshold": 0.5,
+        "profit": 35
+      },
+      {
+        "layer": 6,
+        "long": 512,
+        "short": 256,
+        "threshold": 0.5,
+        "profit": 30
+      },
+      {
+        "layer": 7,
+        "long": 1024,
+        "short": 512,
+        "threshold": 0.5,
+        "profit": 25
+      },
+      {
+        "layer": 8,
+        "long": 2048,
+        "short": 1024,
+        "threshold": 0.5,
+        "profit": 25
+      },
+      {
+        "layer": 9,
+        "long": 4096,
+        "short": 2048,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 10,
+        "long": 8192,
+        "short": 4096,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 11,
+        "long": 16384,
+        "short": 8192,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 12,
+        "long": 32768,
+        "short": 16384,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 13,
+        "long": 65536,
+        "short": 32768,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 14,
+        "long": 131072,
+        "short": 65536,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 15,
+        "long": 262144,
+        "short": 131072,
+        "threshold": 0.5,
+        "profit": 20
+      }
+    ],
+    "GALA_USDT": [
+      {
+        "layer": 1,
+        "long": 2,
+        "short": 1,
+        "threshold": 0.5,
+        "profit": 100
+      },
+      {
+        "layer": 2,
+        "long": 6,
+        "short": 3,
+        "threshold": 0.5,
+        "profit": 70
+      },
+      {
+        "layer": 3,
+        "long": 24,
+        "short": 12,
+        "threshold": 0.5,
+        "profit": 50
+      },
+      {
+        "layer": 4,
+        "long": 96,
+        "short": 48,
+        "threshold": 0.5,
+        "profit": 45
+      },
+      {
+        "layer": 5,
+        "long": 384,
+        "short": 192,
+        "threshold": 0.5,
+        "profit": 35
+      },
+      {
+        "layer": 6,
+        "long": 512,
+        "short": 256,
+        "threshold": 0.5,
+        "profit": 30
+      },
+      {
+        "layer": 7,
+        "long": 1024,
+        "short": 512,
+        "threshold": 0.5,
+        "profit": 25
+      },
+      {
+        "layer": 8,
+        "long": 2048,
+        "short": 1024,
+        "threshold": 0.5,
+        "profit": 25
+      },
+      {
+        "layer": 9,
+        "long": 4096,
+        "short": 2048,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 10,
+        "long": 8192,
+        "short": 4096,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 11,
+        "long": 16384,
+        "short": 8192,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 12,
+        "long": 32768,
+        "short": 16384,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 13,
+        "long": 65536,
+        "short": 32768,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 14,
+        "long": 131072,
+        "short": 65536,
+        "threshold": 0.5,
+        "profit": 20
+      },
+      {
+        "layer": 15,
+        "long": 262144,
+        "short": 131072,
+        "threshold": 0.5,
+        "profit": 20
+      }
+    ]
+  },
+  "auto_restart_after_profit": {
+    "FARTCOIN_USDT": true,
+    "JELLYJELLY_USDT": true,
+    "ARC_USDT": true,
+    "GALA_USDT": true
+  },
+  "manually_closed_symbols": [
+    "FARTCOIN_USDT",
+    "GALA_USDT",
+    "ARC_USDT"
+  ],
+  "stats": {
+    "total_trades": 52,
+    "winning_trades": 49,
+    "total_profit": 17.264230446619997,
+    "total_fees": 1.1338491225000003,
+    "last_trade_time": {
+      "JELLYJELLY_USDT": "2025-10-08T07:24:51.248689",
+      "GALA_USDT": "2025-10-08T18:05:46.075904"
+    },
+    "daily_profit": 1.789409037,
+    "daily_fees": 0.38066476950000006,
+    "daily_reset_time": "2025-10-08T00:00:00"
+  },
+  "timestamp": "2025-10-08T18:59:32.571920"
+}
